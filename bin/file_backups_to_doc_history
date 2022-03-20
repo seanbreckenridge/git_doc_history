@@ -27,13 +27,6 @@ def _parse_arctee_datetime_format(fp: str) -> datetime:
         assert False, f"Could not find arctee date format in {parts}"
 
 
-def git_date(dt: datetime) -> str:
-    """
-    Create a git date with a local timezone that git would understand
-    """
-    return naive(dt).isoformat()
-
-
 @click.command()
 @click.argument(
     "FILE_BACKUPS_DIR",

@@ -47,10 +47,10 @@ as the first argument to this script' 1>&2
 	generated_config="$(python3 -m git_doc_history shell "$CONF_FILE")" || return $?
 	eval "$generated_config" || return $?
 	set -u
-	echo 'Printing generated configuration:' 1>&2
-	echo -e "SOURCE_DIR: $SOURCE_DIR"
-	echo -e "BACKUP_DIR: $BACKUP_DIR"
-	echo -e "COPY_FILES: $COPY_FILES"
+	echo 'Generated configuration:' 1>&2
+	echo -e "SOURCE_DIR: $SOURCE_DIR" 1>&2
+	echo -e "BACKUP_DIR: $BACKUP_DIR" 1>&2
+	echo -e "COPY_FILES: $COPY_FILES" 1>&2
 	set +u
 }
 
@@ -85,7 +85,7 @@ backup() {
 commit() {
 	cd "${BACKUP_DIR}" || return $?
 	if [[ ! -d .git ]]; then
-		git init
+		git init || exit $?
 	fi
 	git add .
 	git commit -m 'update'

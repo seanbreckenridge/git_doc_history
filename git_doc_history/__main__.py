@@ -4,7 +4,6 @@ import dateparser
 
 import click
 
-from . import DocHistory, naive_dt
 from .config import resolve_config, expand_dotenv_file
 
 
@@ -40,6 +39,9 @@ def extract_file_at(at: str, config: str, extract_file: str, output_file: str) -
     EXTRACT_FILE is the name of the file, e.g. todo.txt
     OUTPUT_FILE is the file to write to, or '-' to write to STDOUT
     """
+
+    from . import DocHistory, naive_dt
+
     conf = DocHistory.from_dict(expand_dotenv_file(resolve_config(config)))
     dt = dateparser.parse(at)
     if dt is None:

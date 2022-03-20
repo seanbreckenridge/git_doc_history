@@ -11,7 +11,9 @@ setup(
     url="https://github.com/seanbreckenridge/git_doc_history",
     author="Sean Breckenridge",
     author_email="seanbrecke@gmail.com",
-    description=("""copy/track files in git, and a CLI tool/library to traverse the history"""),
+    description=(
+        """copy/track files in git, and a CLI tool/library to traverse the history"""
+    ),
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",

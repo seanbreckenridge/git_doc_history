@@ -7,7 +7,7 @@ THIS_DIR="$(realpath "$(dirname "${BASH_SOURCE[0]}")")"
 cd "${THIS_DIR}" || exit $?
 
 if [[ -d ./arctee_git ]]; then
-  rm -rf ./arctee_git
+	rm -rf ./arctee_git
 fi
 
 exec ../bin/file_backups_to_doc_history ./arctee_data ./arctee_git

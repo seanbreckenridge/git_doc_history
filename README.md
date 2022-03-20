@@ -45,7 +45,7 @@ $ git_doc_history todo
 ```
 
 ```
-Printing computed configuration:
+Generated configuration:
 SOURCE_DIR: /home/sean/data/todo
 BACKUP_DIR: /home/sean/data/todo_git_history
 COPY_FILES: todo.txt
