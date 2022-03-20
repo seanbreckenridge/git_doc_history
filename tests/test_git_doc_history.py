@@ -1,3 +1,5 @@
+import subprocess
+import shlex
 from pathlib import Path
 from datetime import datetime
 
@@ -7,10 +9,16 @@ import git_doc_history.config as conf
 this_dir = Path(__file__).parent.absolute()
 git_dir = this_dir / "arctee_git"
 
-assert git_dir.exists(), "call from_filebackups_test first"
+script = this_dir / "from_filebackups_test"
+assert script.exists()
+
 
 
 def test_git_doc_history() -> None:
+
+    subprocess.run(shlex.split("bash -x {}".format(script))).check_returncode()
+    assert git_dir.exists(), "call from_filebackups_test first"
+
     cc = conf.expand_dotenv_file(conf.resolve_config(str(this_dir / "config")))
     doc = DocHistory.from_dict(cc)
     doc_histories = list(doc.iter_bytes_from_commits("data.txt"))
