@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Optional
 from datetime import datetime, timezone
 
 import click
@@ -56,20 +56,21 @@ def main(file_backups_dir: Path, to_git_dir: Path) -> None:
     input_files = list(file_backups_dir.glob("*"))
     use_filename = None
     data: list[Tuple[Path, Path, datetime]] = []
+    custom_ext: Optional[str] = None
     for f in input_files:
         dt = _parse_arctee_datetime_format(f.stem)
-        ext = f.suffix
         if "-" in f.stem:
             # if filename has - in it, use it as the filename
             # e.g.: /home/sean/data/todotxt/20220309T072345Z-todo.txt
             use_filename = f.stem.split("-")[1].strip()
         elif use_filename is None:
             use_filename = click.prompt(
-                "What should filenames be renamed to (excluding extension)?", type=str
+                "What should filenames be renamed to?", type=str
             )
+            custom_ext = input("Extension to use?: ").strip()
 
         assert use_filename is not None
-        data.append((f, to_git_dir / f"{use_filename}{ext}", dt))
+        data.append((f, to_git_dir / f"{use_filename}{custom_ext if custom_ext is not None else f.suffix}", dt))
 
     data.sort(key=lambda t: t[-1])
 
