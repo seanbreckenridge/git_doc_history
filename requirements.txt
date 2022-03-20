@@ -1,2 +1,4 @@
 gitpython
+dateparser
 click
+python-dotenv

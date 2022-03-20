@@ -34,5 +34,5 @@ jobs:
           flake8 ./git_doc_history
       - name: Run tests
         run: |
-          ./tests/from_filebackups_test
+          bash -x ./tests/from_filebackups_test
           pytest
