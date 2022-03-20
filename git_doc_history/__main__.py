@@ -1,10 +1,9 @@
 import sys
-import shlex
-import dateparser
 
 import click
 
-from .config import resolve_config, expand_dotenv_file
+
+from .config import resolve_config, parse_config
 
 
 @click.group()
@@ -15,7 +14,9 @@ def main() -> None:
 @main.command()
 @click.argument("ENV_FILE", type=str, required=True)
 def shell(env_file: str) -> None:
-    for k, v in expand_dotenv_file(resolve_config(env_file)).items():
+    import shlex
+
+    for k, v in parse_config(resolve_config(env_file)).items():
         click.echo(f"{k}={shlex.quote(v)}")
 
 
@@ -39,10 +40,11 @@ def extract_file_at(at: str, config: str, extract_file: str, output_file: str) -
     EXTRACT_FILE is the name of the file, e.g. todo.txt
     OUTPUT_FILE is the file to write to, or '-' to write to STDOUT
     """
+    import dateparser
 
     from . import DocHistory, naive_dt
 
-    conf = DocHistory.from_dict(expand_dotenv_file(resolve_config(config)))
+    conf = DocHistory.from_dict(parse_config(resolve_config(config)))
     dt = dateparser.parse(at)
     if dt is None:
         click.echo(f"Couldnt parse {at} into a datetime", err=True)

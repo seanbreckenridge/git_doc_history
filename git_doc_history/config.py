@@ -1,7 +1,7 @@
 import sys
 import os
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Union
 
 import click
 from dotenv import dotenv_values
@@ -29,9 +29,9 @@ def resolve_config(path: str) -> Path:
     return conf
 
 
-def expand_dotenv_file(input_file: Path) -> Dict[str, str]:
+def parse_config(input_file: Union[Path, str]) -> Dict[str, str]:
     res: Dict[str, str] = {}
-    for k, v in dotenv_values(input_file).items():
+    for k, v in dotenv_values(Path(input_file)).items():
         assert v is not None
         if os.linesep not in v:
             res[k] = str(Path(v).expanduser().absolute())  # expand directory names

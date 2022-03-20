@@ -1,4 +1,4 @@
 gitpython
 dateparser
-click
+click>=8.0
 python-dotenv

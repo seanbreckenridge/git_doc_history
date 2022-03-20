@@ -22,7 +22,7 @@ setup(
     package_data={pkg: ["py.typed"]},
     zip_safe=False,
     keywords="data git",
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     scripts=[str(p) for p in Path("bin").glob("*")],
     extras_require={
         "testing": [
