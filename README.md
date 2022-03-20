@@ -4,7 +4,7 @@ Copy and track files in `git`, and a library to traverse the history
 
 Really, the `doc` isn't super accurate, but 'file/index/history' is such an overloaded term when it comes to `git`
 
-I use this to track my `todo.txt` files, changes to configuration files, any shell histories which don't support timestamps
+I use this to track my `todo.txt` files, changes to configuration files, any shell histories which don't support timestamps (see all of my config files [here](https://github.com/seanbreckenridge/dotfiles/tree/master/.config/git_doc_history))
 
 This copies the files to a different directory, so it doesn't interfere with the application/configuration
 
@@ -94,7 +94,6 @@ for snapshot in doc.iter_commit_snapshots("todo.txt"):
     print(str(snapshot.dt))
     print(snapshot.data.decode("utf-8"))
 ```
-
 
 #### Parsing Diffs
 

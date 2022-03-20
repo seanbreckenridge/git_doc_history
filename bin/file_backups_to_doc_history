@@ -70,7 +70,14 @@ def main(file_backups_dir: Path, to_git_dir: Path) -> None:
             custom_ext = input("Extension to use?: ").strip()
 
         assert use_filename is not None
-        data.append((f, to_git_dir / f"{use_filename}{custom_ext if custom_ext is not None else f.suffix}", dt))
+        data.append(
+            (
+                f,
+                to_git_dir
+                / f"{use_filename}{custom_ext if custom_ext is not None else f.suffix}",
+                dt,
+            )
+        )
 
     data.sort(key=lambda t: t[-1])
 
