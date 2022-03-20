@@ -1,0 +1,4 @@
+# relative from root git dir, from where tests are run
+SOURCE_DIR=./tests/arctee_data
+BACKUP_DIR=./tests/arctee_git
+COPY_FILES="data.txt"

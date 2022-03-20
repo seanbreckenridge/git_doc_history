@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+script_name='git_doc_history'
+
+havecmd() {
+	local BINARY ERRMSG
+	BINARY="${1:?Must provide command to check}"
+	command -v "${BINARY}" >/dev/null 2>&1 && return
+	ERRMSG="'${script_name}' requires '${BINARY}', could not find that on your \$PATH"
+	[[ -n "$2" ]] && ERRMSG="${ERRMSG}. $2"
+	printf '%s\n' "${ERRMSG}" 1>&2
+	return 1
+}
+
+set -e
+havecmd git
+set +e
+
+declare CONFIG_DIR SOURCE_DIR BACKUP_DIR COPY_FILES
+CONFIG_DIR="${XDG_CONFIG_HOME:-${HOME}/.config}"
+
+load_config_file() {
+	local CONF_FILE="$1"
+	if [[ ! -e "$CONF_FILE" && -n "$1" ]]; then
+		CONF_FILE="${CONFIG_DIR}/git_doc_history/${CONF_FILE}"
+	fi
+	if [[ ! -e "$CONF_FILE" ]]; then
+		echo 'Expected a config file as the first argument
+
+You can provide a direct path, or place a file in
+~/.config/git_doc_history, and then provide the name
+
+As an example, for https://github.com/todotxt/todo.txt-cli
+
+SOURCE_DIR=~/.todo  # copy from
+BACKUP_DIR=~/Documents/todo_history  # copy to
+COPY_FILES="todo.txt
+done.txt"  # multiple lines for multiple files
+
+This is parsed with https://github.com/theskumar/python-dotenv
+
+As a shorthand, you can place that at ~/.config/git_doc_history/todo and then provide "todo"
+as the first argument to this script' 1>&2
+		return 1
+	fi
+	local generated_config
+	generated_config="$(python3 -m git_doc_history shell "$CONF_FILE")" || return $?
+	eval "$generated_config" || return $?
+	set -u
+	echo 'Printing generated configuration:' 1>&2
+	echo -e "SOURCE_DIR: $SOURCE_DIR"
+	echo -e "BACKUP_DIR: $BACKUP_DIR"
+	echo -e "COPY_FILES: $COPY_FILES"
+	set +u
+}
+
+backup() {
+	if [[ ! -d "$SOURCE_DIR" ]]; then
+		printf 'SOURCE_DIR (%s) is not a directory/does not exist\n' "$SOURCE_DIR" 1>&2
+		return 1
+	fi
+	if [[ ! -d "$BACKUP_DIR" ]]; then
+		mkdir -p "${BACKUP_DIR}" || return $?
+	fi
+	if [[ -z "$COPY_FILES" ]]; then
+		echo 'COPY_FILES is not set' 1>&2
+		return 1
+	fi
+	local rel
+	echo -e "$COPY_FILES" | while read -r f; do
+		rel="${SOURCE_DIR}/${f}"
+		if [[ ! -e "${rel}" ]]; then
+			printf '%s does not exist\n' "${rel}"
+			return 1
+		fi
+		# v -> verbose
+		# a -> archive -- archive (preserve attributes)
+		cp -va "${rel}" "${BACKUP_DIR}"
+	done
+	if [[ -e "${SOURCE_DIR}/.gitignore" ]]; then
+		cp -vau "${SOURCE_DIR}/.gitignore" "${BACKUP_DIR}" || return $?
+	fi
+}
+
+commit() {
+	cd "${BACKUP_DIR}" || return $?
+	if [[ ! -d .git ]]; then
+		git init
+	fi
+	git add .
+	git commit -m 'update'
+}
+
+main() {
+	load_config_file "$1" || return $?
+	backup || return $?
+	commit || return 0
+}
+
+main "$@" || exit $?

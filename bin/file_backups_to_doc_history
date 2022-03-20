@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+
+from pathlib import Path
+from typing import Tuple
+from datetime import datetime, timezone
+
+import click
+from git.util import Actor
+from git.repo import Repo
+
+ARCTEE_DATE_FMT = r"%Y%m%dT%H%M%SZ"
+
+
+def _parse_arctee_datetime_format(fp: str) -> datetime:
+    minl = len(ARCTEE_DATE_FMT) - 1
+    maxl = len(fp) + 1
+    parts = [
+        fp[i : i + j] for i in range(len(fp) - minl) for j in range(minl, maxl + 1)
+    ]
+    for p in parts:
+        try:
+            dt = datetime.strptime(p, ARCTEE_DATE_FMT)
+            return dt.replace(tzinfo=timezone.utc)
+        except ValueError:
+            continue
+    else:
+        assert False, f"Could not find arctee date format in {parts}"
+
+
+def git_date(dt: datetime) -> str:
+    """
+    Create a git date with a local timezone that git would understand
+    """
+    return naive(dt).isoformat()
+
+
+@click.command()
+@click.argument(
+    "FILE_BACKUPS_DIR",
+    type=click.Path(
+        file_okay=False, dir_okay=True, exists=True, path_type=Path  # type: ignore[arg-type]
+    ),
+    required=True,
+)
+@click.argument(
+    "TO_GIT_DIR",
+    type=click.Path(
+        file_okay=False, dir_okay=True, exists=False, path_type=Path  # type: ignore[arg-type]
+    ),
+    required=True,
+)
+def main(file_backups_dir: Path, to_git_dir: Path) -> None:
+    """
+    This converts the data from file_backups modules from HPI to git-tracked directory
+
+    Once a directory has been converted, it is meant to be updated with
+    https://github.com/seanbreckenridge/git_doc_history
+
+    Expects arctee-like files as input -- takes the date the file was backed up
+    and creates a git commit in TO_GIT_DIR with that date. This dedupes the
+    backed up files, since commits will only happen if the files have changed
+    """
+    input_files = list(file_backups_dir.glob("*"))
+    use_filename = None
+    data: list[Tuple[Path, Path, datetime]] = []
+    for f in input_files:
+        dt = _parse_arctee_datetime_format(f.stem)
+        ext = f.suffix
+        if "-" in f.stem:
+            # if filename has - in it, use it as the filename
+            # e.g.: /home/sean/data/todotxt/20220309T072345Z-todo.txt
+            use_filename = f.stem.split("-")[1].strip()
+        elif use_filename is None:
+            use_filename = click.prompt(
+                "What should filenames be renamed to (excluding extension)?", type=str
+            )
+
+        assert use_filename is not None
+        data.append((f, to_git_dir / f"{use_filename}{ext}", dt))
+
+    data.sort(key=lambda t: t[-1])
+
+    to_git_dir.mkdir(parents=True, exist_ok=False)
+    repo = Repo.init(Path(str(to_git_dir)))
+
+    gitcmd = repo.git
+
+    no_commits = True
+
+    for d in data:
+        from_, to_, at_time = d
+        print(d)
+        to_.write_text(from_.read_text())
+        assert at_time.tzinfo is not None
+        gitcmd.add(".")
+        if no_commits or len(repo.index.diff("HEAD")) > 0:
+            repo.index.commit(
+                f"git_doc {at_time}",
+                author=Actor("file_backup", email=None),
+                committer=Actor("file_backup", email=None),
+                author_date=at_time,  # type: ignore[arg-type]
+                commit_date=at_time,  # type: ignore[arg-type]
+            )
+            no_commits = False
+        else:
+            print("no changes, skipping...")
+
+
+if __name__ == "__main__":
+    main(prog_name="file_backups_to_doc_history")
