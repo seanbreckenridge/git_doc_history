@@ -33,7 +33,7 @@ def parse_config(input_file: Union[Path, str]) -> Dict[str, str]:
     res: Dict[str, str] = {}
     for k, v in dotenv_values(Path(input_file)).items():
         assert v is not None
-        if os.linesep not in v:
+        if os.linesep not in v and k != "COPY_FILES":
             res[k] = str(Path(v).expanduser().absolute())  # expand directory names
         else:
             res[k] = v  # dont modify lines with multiple lines
