@@ -74,7 +74,7 @@ backup() {
 			return 1
 		fi
 		# v -> verbose
-		# a -> archive -- archive (preserve attributes)
+		# a -> archive -- preserve attributes
 		cp -va "${rel}" "${BACKUP_DIR}"
 	done
 	if [[ -e "${SOURCE_DIR}/.gitignore" ]]; then
