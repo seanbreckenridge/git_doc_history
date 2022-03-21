@@ -2,15 +2,15 @@
 
 Copy and track files in `git`, and a library to traverse the history
 
-Really, the `doc` isn't super accurate, but 'file/index/history' is such an overloaded term when it comes to `git`
-
-I use this to track my `todo.txt` files, changes to configuration files, any shell histories which don't support timestamps (see all of my config files [here](https://github.com/seanbreckenridge/dotfiles/tree/master/.config/git_doc_history))
+I use this to track my [`todo.txt`](https://github.com/todotxt/todo.txt-cli) files, changes to configuration files, any shell histories which don't support timestamps (see all of my config files [here](https://github.com/seanbreckenridge/dotfiles/tree/master/.config/git_doc_history))
 
 This copies the files to a different directory, so it doesn't interfere with the application/configuration
 
 By copying those files to a separate directory, I can always roll back to previous file, or see what the file was like a couple days/months ago.
 
-For shell histories/files which are unique lines of text (e.g., my `todo.txt` file) this also lets me estimate timestamps for when new lines were added to the history/text files, using the `iter_diffs` below, which emits added/removed events for individual events with estimated times
+For shell histories/files which are unique lines of text (e.g., my `todo.txt` file) this also lets me estimate timestamps for when new lines were added to the history/text files, using the `iter_commit_snapshots` and `parse_snapshot_diffs` below, which emits added/removed events for individual lines with estimated times
+
+This was mostly created for [HPI](https://github.com/seanbreckenridge/HPI), so I don't have to rewrite the code to extract lines for git history over and over
 
 ## Installation
 
@@ -24,9 +24,9 @@ pip install git_doc_history
 
 ## Usage
 
-The main script to backup data is [`bin/git_doc_history`], which gets installed into your `~/.local/bin/` directory.
+The main script to backup data is the bash script [`bin/git_doc_history`](bin/git_doc_history), which gets installed into your `~/.local/bin/` directory.
 
-If uses a config file (parsed with [`python-dotenv`](https://github.com/theskumar/python-dotenv)) like:
+If uses a config file (parsed with [`python-dotenv`](https://github.com/theskumar/python-dotenv) -- so you can use bash-like syntax to grab environment variables) like:
 
 ```
 SOURCE_DIR=~/.todo  # copy from
@@ -36,9 +36,9 @@ COPY_FILES="todo.txt
 done.txt"
 ```
 
-You can either provide the full path to that config file, or place the file in ~/.config/git_doc_history
+You can either provide the full path to that config file, or place the file in `~/.config/git_doc_history`
 
-For example, after placing it at ~/.config/git_doc_history/todo -- to copy/commit any changes, run:
+For example, after placing it at `~/.config/git_doc_history/todo` -- to copy/commit any changes, run:
 
 ```bash
 $ git_doc_history todo
