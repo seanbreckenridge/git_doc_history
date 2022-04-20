@@ -12,6 +12,8 @@ For shell histories/files which are unique lines of text (e.g., my `todo.txt` fi
 
 This was mostly created for [HPI](https://github.com/seanbreckenridge/HPI), so I don't have to rewrite the code to extract lines for git history over and over
 
+This is a general purpose solution for tracking file history in `git` -- so its not extremely opinionated. In some cases it can be seen as a stop-gap solution, to have some file versioning in case you ever want to roll back. It may work particularly well for basic files with a couple dozen lines (e.g. I use it for RSS feeds, `todo.txt`, bookmarks, and a couple history files)
+
 ## Installation
 
 Requires `python3.8+`
