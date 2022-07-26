@@ -7,7 +7,7 @@ import click
 from dotenv import dotenv_values
 
 config_dir = os.environ.get(
-    "XDG_CONFIG_DIR", os.path.join(os.environ["HOME"], ".config")
+    "XDG_CONFIG_DIR", os.path.expanduser("~/.config")
 )
 
 
