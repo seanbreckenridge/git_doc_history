@@ -37,7 +37,7 @@ def parse_config(input_file: Union[Path, str]) -> Dict[str, str]:
             res[k] = str(Path(v).expanduser().absolute())  # expand directory names
         else:
             res[k] = v  # dont modify lines with multiple lines
-    assert "SOURCE_DIR" in res, "Missing SOURCE_FILES key"
+    assert "SOURCE_DIR" in res, "Missing SOURCE_DIR key"
     assert "BACKUP_DIR" in res, "Missing BACKUP_DIR key"
     assert "COPY_FILES" in res, "Missing COPY_FILES key"
     return res
