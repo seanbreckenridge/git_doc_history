@@ -6,9 +6,7 @@ from typing import Dict, Union
 import click
 from dotenv import dotenv_values
 
-config_dir = os.environ.get(
-    "XDG_CONFIG_DIR", os.path.expanduser("~/.config")
-)
+config_dir = os.environ.get("XDG_CONFIG_DIR", os.path.expanduser("~/.config"))
 
 
 def _resolve_env_file(conf: str) -> str:

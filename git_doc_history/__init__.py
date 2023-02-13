@@ -159,7 +159,6 @@ def parse_snapshot_diffs(
         snapshot_set = set()
         # e.g. iterate over lines -- or whatever data was parsed
         for sn in snapshot_data:
-
             snapshot_set.add(sn)
             # we're already tracking this in state -- it was added in a previous commit
             if sn in state:
