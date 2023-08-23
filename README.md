@@ -105,7 +105,7 @@ given by splitting it into lines. If lines are added/removed, this returns an
 event which specifies when in the history, and what was added/removed
 
 Alternatively, can pass a `parse_func`, which is a function which
-accepts the `DocHistorySnapshot`, and retuns a list of hashable items
+accepts the `DocHistorySnapshot`, and returns a list of hashable items
 to store as state
 
 For an example of parsing diffs, see [`examples/todotxt_diff.py`](examples/todotxt_diff.py):

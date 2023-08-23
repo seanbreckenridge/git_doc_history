@@ -145,7 +145,7 @@ def parse_snapshot_diffs(
     event which specifies when in the history, and what was added/removed
 
     Alternatively, can pass a 'parse_func', which is a function which
-    accepts the DocHistorySnapshot, and retuns a list of hashable items
+    accepts the DocHistorySnapshot, and returns a list of hashable items
     to store as state
     """
     if parse_func is None:
