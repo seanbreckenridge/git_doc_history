@@ -47,7 +47,7 @@ def extract_file_at(at: str, config: str, extract_file: str, output_file: str) -
     conf = DocHistory.from_dict(parse_config(resolve_config(config)))
     dt = dateparser.parse(at)
     if dt is None:
-        click.echo(f"Couldnt parse {at} into a datetime", err=True)
+        click.echo(f"Couldn't parse {at} into a datetime", err=True)
         sys.exit(1)
 
     data_bytes = conf.extract_buffer_at(extract_file, naive_dt(dt))

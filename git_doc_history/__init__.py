@@ -114,7 +114,7 @@ Action = Literal["added", "removed"]
 
 class Diff(NamedTuple):
     """
-    A diff -- whats changed from one git snapshot to the next
+    A diff -- what has changed from one git snapshot to the next
     """
 
     epoch_time: int

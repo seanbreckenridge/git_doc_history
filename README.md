@@ -117,7 +117,7 @@ added 2022-03-08 12:14:45 (C) 2022-03-08 create shebang script +programming
 removed 2022-03-08 13:14:58 (C) 2022-03-08 create shebang script +programming
 added 2022-03-08 22:23:39 save formhistory.sqlite in browserexport
 removed 2022-03-08 23:23:45 save formhistory.sqlite in browserexport
-added 2022-03-09 02:49:58 (C) create a python fzf wrapper because apparently I cant find a good one
+added 2022-03-09 02:49:58 (C) create a python fzf wrapper because apparently I can't find a good one
 added 2022-03-10 16:24:24 (B) 2022-03-10 create plaintext playlist parser module +music
 removed 2022-03-11 01:30:49 (B) 2022-03-10 create plaintext playlist parser module +music
 added 2022-03-11 10:37:06 (C) 2022-03-11 sync tmux from home directory +programming
